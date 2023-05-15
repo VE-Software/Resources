@@ -1,0 +1,1368 @@
+BimUtopia, Revit and Forge
+A (un)complete guide
+Casey Hogan
+================================================================================
+Logins
+Website | Username | Password
+
+Forge/Autodesk/Bim360 | mikev@visserengineering.com 
+
+Azure | admin@visserengineering.com
+
+Twilo | admin@visserengineering.com
+
+Gmail.com | bimutopiaservices@gmail.com
+
+Gmail.com | contactbimutopia@gmail.com
+================================================================================
+1.0 REVIT 
+Autodesk Revit is a building information modeling (BIM) software used by 
+architects, engineers, and construction professionals to design, model, 
+and document building projects. It provides a comprehensive set of tools
+and features for creating and managing building models, including 2D and
+3D geometry, parametric components, and construction documentation.
+
+Revit allows users to create a virtual building model that includes
+information about the physical and functional properties of the building
+components. This includes information about materials, dimensions,
+performance, and cost. The software supports various BIM workflows,
+including conceptual design, detailed design, construction documentation,
+and building operations.
+
+Important Features:
+
+Building information modeling: Revit provides a parametric modeling
+environment that allows users to create and modify building elements
+and systems. The software supports various modeling tools, such as
+walls, floors, roofs, windows, doors, stairs, and more.
+
+Collaboration and coordination: Revit allows multiple users to work on
+the same project simultaneously, enabling teams to collaborate and 
+coordinate design changes in real-time. The software includes tools
+for version control, design review, and clash detection.
+
+Documentation: Revit provides tools for creating construction
+documentation, including drawings, schedules, and specifications.
+The software supports various annotation and detailing tools, such as
+tags, dimensions, and text.
+
+Analysis and visualization: Revit allows users to perform various analysis 
+and visualization tasks, such as energy analysis, lighting analysis, and 
+solar studies. The software also includes tools for creating 
+photorealistic renderings and animations.
+================================================================================
+1.1 Notes
+    • Revit is forwards compatible but not backwards compatible.
+    • New versions come out every year around Q2
+    • .rvt files are structured like .zip files
+    • Revit has 2 types of elements, basic elements and instance elements.
+	  Basic elements are built into every file. Instance elements need to be 
+	  imported from an rfa.
+    • Creating dwgs/dxfs
+		-Open file
+		-In top left Go to File>Export>DWG
+		-Select Views
+		-Follow prompts to generate files.
+================================================================================
+1.2 Addins
+    1) Change Output path of program to C:\ProgramData\Autodesk\Revit\Addins\2020
+    2) Set start external program to Revit.
+    3) Make sure your driver inherits IExternalCommand.
+    4) Put this file in the addin foloder as a .addin
+			<?xml version="1.0" encoding="utf-8"?>
+			<RevitAddIns>
+			  <AddIn Type="Command">
+				<Assembly> (Name of your Program).dll </Assembly>
+				<AddInId> Generate a GUID </AddInId>
+				<FullClassName> 
+				Class name/location of your driver file. (Ex. DoSomething.Command) 
+				</FullClassName>
+				<SuppressedWarning>WrongAssemblyPath</SuppressedWarning>
+				<VendorId> Your Name VendorId>
+				<Text> Name of your tool </Text>
+				<VisibilityMode>AlwaysVisible</VisibilityMode>
+				<Discipline>Any</Discipline>
+				<LanguageType>Unknown</LanguageType>
+			  </AddIn>
+			</RevitAddIns>
+    5) Then in Revit go to addins panel and external programs and your addin 
+	   should be there.
+================================================================================       
+1.3 Revit Lookup
+Revit look up is the most important tool for using revit. It is an Interactive
+Revit RFA and RVT project database exploration tool to view and navigate BIM
+element parameters, properties and relationships.
+================================================================================
+1.4 Detached From Central
+	When working with a file from an architect often you will not have the 
+	permissions required to make changes to said file. Making changes to the
+	file is important to data extraction process when using the local generation.
+	Forge doesn’t care. 
+    1. Open the architect file
+    2. Go to Collaboration Tab
+    3. Click Collaborate
+    4. Save file
+    5. Go to open a new file.
+    6. In the file explorer select the file and click “Detach from central” 
+	then save that file.
+================================================================================
+1.5 Revit API
+	The Revit API is a collection of programming tools and resources that allows
+	developers to create custom applications that can interact with Autodesk 
+	Revit software.
+	The Revit API is built on the .NET framework and provides access to a wide
+	range of classes, methods, and properties that can be used to manipulate
+	Revit models. Developers can use a variety of programming languages such as
+	C# to create add-ins and plugins that integrate	with Revit.
+	
+	============================================================================
+	1.5.1 Document
+
+    The Revit API Document object is a fundamental object in the Revit API that
+	represents a Revit model or document. It provides access to the entire data
+	model of a Revit document, including all the elements, views, and settings.
+
+	The Document object is the starting point for most interactions with a Revit
+	model using the API. It contains properties and methods that enable developers
+	to access and manipulate various aspects of the Revit document, such as:
+
+	Elements: The Document object provides methods for querying and modifying
+	elements within the Revit model. Elements can be filtered based on various
+	criteria, such as category, family, or parameter values.
+	
+	Views: The Document object provides methods for working with views, such 
+	as creating new views, setting view properties, and manipulating view
+	contents.
+	
+	Settings: The Document object provides access to various settings that
+	control the behavior of Revit, such as units, project information,
+	and rendering options.
+	
+	The Document object is created when a Revit model is opened and is destroyed
+	when the model is closed.The Document object is not thread-safe, which means
+	that it should not be accessed concurrently	by multiple threads.
+	
+	Overall, the Document object is a critical component of the Revit API 
+	that enables developers to interact with Revit models programmatically
+	and create custom workflows that extend the functionality of the software.
+	============================================================================
+	1.5.2 Elements
+	In Revit API, an Element is a fundamental object that represents a graphical
+	or non-graphical component within a building model. It can be anything from
+	a wall, door, window, or roof, to a room, view, or annotation.
+
+	Elements in Revit API have a set of properties or attributes that define
+	their characteristics, such as geometry, location, material, and other
+	metadata. These properties can be accessed and modified programmatically
+	through the API, allowing for the creation, editing, and deletion of
+	elements within the Revit model.
+
+	Furthermore, elements can be categorized into different classes based
+	on their type or purpose, and can be queried or filtered by these classes.
+	For instance, one can get a list of all the walls in the model, or all
+	the rooms that satisfy certain criteria.
+
+	Elements are the building blocks of the Revit model, and the Revit API
+	provides a powerful set of tools for interacting with them programmatically.
+	============================================================================
+	1.5.3 RFA
+	A Revit RFA (Revit Family) is a file format used by Autodesk Revit to create
+	and store families, which are collections of elements or objects that can be
+	used and reused in Revit projects. Families are an important concept in Revit
+	as they allow users to create custom content that can be easily added to
+	building models.
+
+	A Revit RFA file is essentially a container that stores all the information
+	needed to define a family, including its geometry, parameters, materials,
+	and other properties. A family can be composed of multiple nested elements,
+	and can include various types and sizes of components, such as doors, 
+	windows, walls, roofs, and other building elements.
+
+	To create a new RFA file in Revit, you typically start by defining the basic
+	parameters and geometry of the family. This can involve using the Revit 
+	modeling tools to create 3D shapes and forms, as well as defining parameters
+	that control the size, shape, and behavior of the family.
+
+	Once the basic geometry and parameters have been defined, you can use
+	Revit's Family Editor to add additional details and properties to the 
+	family, such as materials, constraints, and annotations. You can also create
+	multiple types and sizes of the family to allow for greater flexibility and
+	customization in Revit projects.
+
+	In summary, a Revit RFA file is a file format used by Autodesk Revit to store
+	families, which are collections of elements or objects that can be used and
+	reused in Revit projects. RFA files contain all the information needed to
+	define a family, including its geometry, parameters, materials, and other
+	properties, and can be created using the Revit modeling tools and Family
+	Editor.
+
+	============================================================================
+	1.5.4 Transaction
+
+	Transactions: The Document object provides methods for creating and managing
+	transactions, which are used to make changes to the Revit model in a 
+	controlled and reversible manner.
+	
+	In Revit API, transactions are used to manage changes to a Revit model made
+	by an external application. A transaction is a sequence of actions that 
+	modifies the Revit model and can be committed or rolled back. Transactions
+	ensure that the changes made by the external application are performed in a
+	consistent and reversible manner.
+
+	Transactions in Revit API are managed through the Transaction class, which
+	provides methods for starting, committing, and rolling back transactions.
+	When a transaction is started, the external application can perform a series
+	of actions that modify the Revit model. Once the changes are complete, the
+	transaction can be committed, which makes the changes permanent and updates
+	the Revit model accordingly. If an error occurs during the transaction, the
+	transaction can be rolled back, which cancels all changes made by the
+	external application.
+
+	Transactions are essential in Revit API because they ensure that changes
+	made by external applications do not corrupt the Revit model or cause
+	conflicts with other applications. By using transactions, external
+	applications can modify the Revit model in a safe and controlled manner,
+	ensuring that the Revit model remains consistent and accurate.
+
+	In addition to managing transactions manually, Revit API provides automatic
+	transaction management through the use of the UIApplication and UIDocument
+	classes. These classes automatically manage transactions when external
+	applications interact with the Revit model, simplifying the transaction
+	management process for developers.
+	
+	============================================================================
+	1.5.5 BuiltInParameters
+
+	In Revit API, BuiltInParameters refers to a set of predefined parameter IDs
+	that are available for every Revit element. These parameters are built-in to
+	Revit and are used to store information about elements such as their 
+	dimensions, materials, and other properties.
+
+	BuiltInParameters are essentially a predefined set of properties that can be
+	accessed and modified programmatically through the Revit API. The IDs are
+	unique to each parameter, and they can be used to retrieve or set a
+	parameter's value for a specific element.
+
+	Examples:
+
+	BuiltInParameter.WALL_BASE_CONSTRAINT: stores the ID of the element to 
+	which a wall is attached at its base.
+	
+	BuiltInParameter.INSTANCE_MATERIAL_NAME: stores the name of the material
+	assigned to an element instance.
+	
+	Using BuiltInParameters in Revit API can significantly simplify the process
+	of accessing and modifying element properties programmatically, and can 
+	help automate various tasks in the BIM workflow.
+	
+	============================================================================
+	1.5.6 FilteredElementCollector and ElementCategoryFilter 
+	In Revit API, FilteredElementCollector is a class that provides a convenient
+	way to retrieve a set of elements from the Revit model based on certain 
+	filtering criteria. It allows for efficient and optimized access to large 
+	numbers of elements, without having to loop through all elements one by one.
+
+	To use FilteredElementCollector, you first create an instance of the class, and
+	then specify one or more filters to narrow down the set of elements to retrieve.
+	These filters can be based on various criteria, such as element class, category,
+	parameter values, and other properties.
+
+	ElementCategoryFilter is one such filter that can be used with 
+	FilteredElementCollector. As the name suggests, ElementCategoryFilter allows you
+	to filter elements based on their category, such as walls, doors, windows, or 
+	levels. You can specify one or more categories to include or exclude, and the 
+	filter will retrieve only those elements that belong to the selected categories.
+
+	To use ElementCategoryFilter with FilteredElementCollector, you create an 
+	instance of the filter and pass it to the constructor of the collector. The 
+	collector will then use the filter to retrieve only the elements that satisfy 
+	the specified category criteria.
+	 
+	Example retreiving the Walls from the file:
+		ElementCategoryFilter _Filter = new ElementCategoryFilter
+										(BuiltInCategory.OST_Walls);
+
+            FilteredElementCollector _Collector = 
+									new FilteredElementCollector(myDocument);
+
+            List<Wall> _Walls = _Collector.WherePasses(_Filter).ToElements()
+                                .Where(p => p is Wall && p != null).ToList<Wall>();
+	============================================================================
+	1.5.7
+	In the Revit API, a FamilySymbol is a type of object that represents a 
+	specific variation or size of a Revit family. Families in Revit can have
+	multiple variations or types, each with its own set of parameters and 
+	properties. For example, a door family might have variations for different
+	sizes, materials, or hardware configurations.
+
+	A FamilySymbol object is used to represent a specific variation of a family
+	in a Revit project. It contains information about the family's geometry, 
+	parameters, materials, and other properties, as well as a reference to the
+	original family file from which it was created. FamilySymbols can be created
+	and manipulated using the Revit API, allowing users to customize and modify
+	families to suit their specific project requirements.
+
+	To create a new FamilySymbol in the Revit API, you typically start by 
+	creating a new instance of the appropriate family type using the 
+	FamilyManager class. You can then add or modify parameters and properties
+	of the FamilySymbol, such as changing its dimensions, materials, or other
+	properties. Finally, you can add the FamilySymbol to the Revit project 
+	using the appropriate method or command.
+	============================================================================
+	1.5.8 Creasting elements via Revit API
+	Creating elements in the Revit API involves a few steps:
+
+	Determine the type of element to create: Before creating an element, you need
+	to know its if it is a basic element or an instance element. Basic elements
+	Will have a built in method in the revit api that you need to use to create
+	them. If they are an instant type then you generate them using the method
+	document.Create.NewFamilyInstance(3 overloaded methods find them in the revit
+	api documentation at https://www.revitapidocs.com/)
+	
+	Find the correct constructor to use: As eluded to earlier there are multiple
+	constructors to create the various elements. Some require location data, for
+	example a column will need its location as a point. Other elements such as 
+	walls require you to pass in a line. Some do not require any location data 
+	such as levels. 
+	
+	Any changes including adding elements to a document need to be conducted in
+	an open transaction.
+
+	Creating an instance element:	
+		var beam = document.Create.NewFamilyInstance
+								(line, symbol, level, StructuralType.Beam);
+	
+	Creating an instance of a basic element:	
+		var wall = Wall.Create(theTop.Document, theCurve, theBot.Id, true);
+================================================================================
+1.6 BuildingLite 
+    Buildinglite is the DLL that contains all the objects and logic for
+	extracting geometry from a Revit file (RevitExtractionAddin). 
+    There are two types of objects. Components and Component Types. 
+    Components are the instances of the types. The types contain information 
+	that pertains to all the components of that type such as material, 
+	general shape, name ect.
+    Building Lite is completely commented. If there’s any question regarding the
+	code contact Casey.M.Hogan@gmail.com.
+	
+	1.6.0 common fields
+	============================================================================
+	All elements will have a name and guid that are accessed through a field in
+	the element
+	
+	GUID: found as a field in its element
+		GUID = theElement.UniqueId;
+		
+	Name: found as a field in its element
+		Name = theElement.Name;
+		
+	Many elements will have the following fields 
+	
+	Level : found with the following query theElement.Document.
+										GetElement(theElement.LevelId) as Level
+		
+	TypeGUID : found with the following query theElement.Document
+									.GetElement(theElement.GetTypeId()).UniqueId
+	
+	============================================================================
+	1.6.1 Walls
+		Walls are a basic element in Revit.
+		
+		WallTypes contains the following fields
+		------------------------------------------------------------------------
+		GUID: refer to 1.6.0
+		
+		Name: refer to 1.6.0
+		
+		Layers: The WallType object has a method called GetCompoundStructure().
+		Calling this return an object called CompoundStructure. The compound
+		structure contains a method called GetLayers() which returns a list
+		of CompoundStructureLayer which contains the information needed to
+		create a Buildinglite Layer Object.
+		
+		Thickness: Thickness is found from taking the list of layers we created
+		and adding up all of their thicknesses.
+		
+		RevitWall fields
+		------------------------------------------------------------------------
+		GUID : refer to 1.6.0
+		
+		Name : refer to 1.6.0		
+		
+		Level : refer to 1.6.0
+		
+		TypeGUID : refer to 1.6.0
+		
+		UnconnectedHeight: If a wall doesn’t have a top level its considered
+		unconnected. The unconnectedheight can be found as a BuiltInParameter
+		with the following piece of code.
+		UnConnectedHeight = wall.get_Parameter
+							(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
+		
+		FireRating: Found as a BuiltInParameter.
+		FireRating = wall.get_Parameter(BuiltInParameter.FIRE_RATING).AsInteger();
+		
+		BottomLevelGUID: Found as a built in Parameter.
+		BottomLevelGUID = wall.Document.GetElement(wall.get_Parameter
+		(BuiltInParameter.WALL_BASE_CONSTRAINT).AsElementId()).UniqueId;
+		
+		BottomLevelOffset: Found as a built in Parameter.
+		BotOffset = wall.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET).AsDouble();
+		
+		TopLevelGUID: Found as a built in Parameter.
+		TopLevelGUID = wall.Document.GetElement(wall.get_Parameter
+		(BuiltInParameter.WALL_HEIGHT_TYPE).AsElementId()).UniqueId;
+		
+		TopLevelOffset: Found as a built in Parameter.
+		TopOffset = wall.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET).AsDouble();
+		
+		Openings: Openings in Walls are elements that are embedded in the wall
+		such as Windows doors and Curtain Walls.
+		Openings are found in a wall by creating a transactiongroup and then
+		deleting the wall. Giving us access to all the elements that are
+		"dependent" on the Wall. Which means any element imbedded into the wall.
+		
+		We do this by using the method Element.GetDependentElements();
+		
+		Flipped: Property to test whether the wall orientation is flipped.
+		Flipped = Wall.isFlipped;
+    ============================================================================
+	1.6.2 Floors
+		Floors are basic elements in Revit.		
+		
+		Name: See 1.6.0 
+		
+		Level : See 1.6.0
+		
+		Thickness: Not currently used.
+		
+		Offset: BuiltInParameter
+		floorplate.Offset = floor.get_Parameter
+						(BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM).AsDouble();
+		
+		Layers: The Floor object has a method called GetCompoundStructure().
+		Calling this return an object called CompoundStructure. The compound
+		structure contains a method called GetLayers() which returns a list
+		of CompoundStructureLayer which contains the information needed to
+		create a Buildinglite Layer Object.
+		
+		SpotElevations: Spot elevations are found in the floor through the slabshape
+		editor. 
+		
+		Perimeter: The method to retrieve the floor perimeter is very complex.
+		This is due to the nature of how a floor plate can be constructed.
+		
+		1)The first thing we need to do is find the main floor. The "main floor"
+		is the largest continoud section of the floor. To do this we take the
+		geometry object of the floor and extract its top planes and create floor
+		plate from all of these planes.
+		To do this use the method CreateFloorsFromFaces(floor)
+		private static List<FloorPlate> CreateFloorsFromFaces(Floor floor)
+		
+		2)The second thing to do is to take that list of floors you've created
+		and assign new GUIDs to these new floors. This is accomplished by using
+		the method AssignNewGuids(floors, floor, ref count)
+		private static void AssignNewGuids(List<FloorPlate> floors,
+											Floor floor, ref int count)
+		
+		3) The third step is then to take these newly created floorplates and
+		see if their holes are contained in the main floorplate. If not those
+		holes are not actual holes they are seperate floorplates. When this
+		is the case you will take the coordinates of those holes and create
+		new floors with them, copying the parametes of the main floor, and
+		creating a new GUID.		
+		
+		
+		Elevation: To get the elevation find the level and grab that elevation 
+		and add it to the offset.
+		_Floorplate.Elevation = (floor.Document.GetElement(floor.LevelId) as Level)
+								.Elevation + _Floorplate.Offset;
+								
+		Soffits: Floors have an object associated with called a SlabShapeEditor
+		you can get the soffits from the SlabShapeEditor.
+		floor.SlabShapeEditor.GetRidgeLines().Select
+			(p => p.ToLineSegment()).ToList<Geometry.LineSegment>();
+		
+		
+	============================================================================
+	1.6.3 Roofs
+		Roofs are basic elements in Revit.
+		Name: See 1.6.0
+		
+		Level : See 1.6.0
+		
+		Thickness: BuiltInParameter
+		_Roof.Thickness = roof.get_Parameter
+							(BuiltInParameter.ROOF_ATTR_THICKNESS_PARAM).AsDouble();
+		
+		Offset: Take the elevation and subtract it from the level elevation.
+		_Roof.Offset = _Roof.Elevation - (roof.Document.GetElement
+										(roof.LevelId) as Level).Elevation;
+		
+		Layers: The roof object has a method called GetCompoundStructure().
+		Calling this return an object called CompoundStructure. The compound
+		structure contains a method called GetLayers() which returns a list
+		of CompoundStructureLayer which contains the information needed to
+		create a Buildinglite Layer Object.
+		
+		Curves: Model curves in Revit API are represented as geometric elements
+		that are used to define the shape and layout of building components.
+		They are typically used to create 2D and 3D sketches of roofs.
+		Curves contain several pieces of information. An end point and a
+		beggining point, as well as a slope and an indication if this curve
+		defines a slope for a roof. 
+		
+		Elevation: Roof elevation is grabbed from it's geometry object.
+		_Roof.Elevation = roof.GetSolid().ComputeCentroid().Z;
+		
+		SlopeArrows: In Revit API, sloped arrows refer to the graphical 
+		representation of dimensions that are inclined or sloped in a non-horizontal
+		or non-vertical direction. These arrows are used to indicate the dimension
+		of a component or object that is not parallel or perpendicular to the
+		X, Y, or Z axis.
+
+	============================================================================
+	1.6.4 Levels
+		Levels are basic elements in Revit.
+		
+		GUID: See 1.6.0
+		
+		Name: See 1.6.0
+		
+		Height: Located in a field in the Level object
+		Height = level.ProjectElevation;
+				
+		RoofPlateGuids: A list of the GUIDs of this levels roofplates. Added when
+		a roofplate is created.
+		
+		FloorPlateGuids: A list of the GUIDs of this levels floorplates. Added when
+		a floorplate is created.
+	============================================================================
+	1.6.5 Columns
+		Columns are instance elements in Revit.
+		
+		ColumnTypes Fields:
+		------------------------------------------------------------------------
+		GUID:See 1.6.0
+
+		Name:See 1.6.0
+		
+		Material: As of now there are 5 types of materials for columns Concrete,
+		Steel, Masonry, Wood, and undefined. How we find the material is by taking
+		the columns geometry element, and find a face. The face will gace an field
+		named MaterialId. We can use that materialID to find the material being
+		used.
+		
+		Width: To get the width of a column type you take the topface of the column
+		and then take its first value.
+		var _TopFace = columnType.CheckAndReturnSolid().GetTopFace().GetOuterLoop();
+        Width = _TopFace.get_Item(0).ApproximateLength * 12;		
+		
+		Depth:To get the width of a column type you take the topface of the column
+		and then take its second value.
+		var _TopFace = columnType.CheckAndReturnSolid().GetTopFace().GetOuterLoop();
+        Depth = _TopFace.get_Item(1).ApproximateLength * 12;
+		
+		Coordinates: Coordinates for columntyoes are created by taking the width
+		and depth and creating a coordinate system using those 2 values.
+		public void SetCoordinates()
+        {
+            var p1 = new Geometry.PointDbl(Width / 2, Depth / 2);
+            var p2 = new Geometry.PointDbl(Width / 2, -Depth / 2);
+            var p3 = new Geometry.PointDbl(-Width / 2, -Depth / 2);
+            var p4 = new Geometry.PointDbl(-Width / 2, Depth / 2);
+
+            CoordinatesList.Add(p1);
+            CoordinatesList.Add(p2);
+            CoordinatesList.Add(p3);
+            CoordinatesList.Add(p4);
+            CoordinatesList.Add(p1);
+        }
+		
+		Column:
+		------------------------------------------------------------------------
+		GUID:See 1.6.0
+
+		Name:See 1.6.0
+		
+		TypeGUID: 1.6.0
+		
+		TopLevelGUID: BuiltInParameter
+		var _Top = column.Document.GetElement
+        (column.get_Parameter(BuiltInParameter.SCHEDULE_TOP_LEVEL_PARAM).AsElementId());
+		RevitLocation.TopLevelGUID = _Top.UniqueId
+		
+		TopLevelOffset: BuiltInParameter
+		var _Offset = column.get_Parameter(BuiltInParameter.FAMILY_TOP_LEVEL_OFFSET_PARAM);
+		RevitLocation.TopOffset = _Offset.AsDouble();
+		
+		Location: The location of a column is stored as a location point that has an XYZ
+		point. 
+		var _LocationPoint = column.Location as LocationPoint;
+		
+		BottomLevelGUID: BuiltInParameter
+		var _Bot = column.get_Parameter(BuiltInParameter.FAMILY_BASE_LEVEL_PARAM);
+		var _LevelID = _Bot.AsElementId();
+        RevitLocation.BottomLevelGUID = column.Document.GetElement(_LevelID).UniqueId;
+		
+		BottomLevelOffset: BuiltInParameter
+		var _Offset = column.get_Parameter(BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM);
+		RevitLocation.BottomOffset = _Offset.AsDouble();
+		
+		Rotation: Column rotations are found by getting the columns LocationPoint
+		field. Then that LocationPoint will have a Rotation field that is in 
+		radians. BimUtopia needs them in degrees so we convert radians to degrees
+		before we save it.
+		var _LocationPoint = column.Location as LocationPoint;
+        var _RotationInRadians = _LocationPoint.Rotation;
+        RotationInDegrees = (_RotationInRadians * 180) / Math.PI;
+		
+	============================================================================
+	1.6.6 Beams
+		Beams are instance elements in Revit.
+		
+		BeamType Fields:
+		------------------------------------------------------------------------
+		GUID: See 1.6.0
+
+		Name: See 1.6.0
+				
+		Width: Some parameters are in the elements list of parameters however are
+		not built-in parameters. These are custom parameters, we can get access to
+		these if we know their name. When working with beams width is set as a custom
+		parameter. In general the name of this parameter will either be "Width" or "b"
+		var param =  theFamilySymbol.Parameters.GetParameter("Width");
+        if(param == null) param = theFamilySymbol.Parameters.GetParameter("b");
+        Width = param.AsDouble();
+		
+		Depth: Some parameters are in the elements list of parameters however are
+		not built-in parameters. These are custom parameters, we can get access to
+		these if we know their name. When working with beams depth is set as a custom
+		parameter. In general the name of this parameter will either be "Depth" or "h"
+		var param =  theFamilySymbol.Parameters.GetParameter("Depth");
+        if(param == null) param = theFamilySymbol.Parameters.GetParameter("h");
+        Width = param.AsDouble();		
+		
+		Beam Fields
+		------------------------------------------------------------------------
+		GUID: see 1.6.0
+		
+		Name: see 1.6.0
+		
+		TypeGUID: see 1.6.0
+		
+		Start: Beams will have a LocationCurve as its location object. To find the start
+		we take the location curve and find its start location.
+		Start = (theFamilyInstance.Location as LocationCurve).Curve.Tessellate()[0].ToPointDbl_3D();
+		
+		End: Beams will have a LocationCurve as its location object. To find the end
+		we take the location curve and find its end location.
+		End = (theFamilyInstance.Location as LocationCurve).Curve.Tessellate()[1].ToPointDbl_3D();
+		
+	============================================================================
+	1.6.7 Layers
+		Name: To find a layers name we need to find its material id to find it's material name.
+		Name = doc.GetElement(layer.MaterialId).Name;
+				
+		Thickness: Thickness is found by taking a layers width.
+		Thickness = layer.Width * 12;
+		
+		IsCore: Is core determines if a layer is considered core material. We
+		find this by checking the Layers function to see if its structural. 
+		IsCore = layer.Function == MaterialFunctionAssignment.Structure;
+	============================================================================
+	1.6.8 Opening
+	
+	Opening Type Fields
+	----------------------------------------------------------------------------
+	Name:see 1.6.0
+	
+	GUID:see 1.6.0
+	
+	Category: There are 3 categories currently, Curtain Walls, Doors, and Windows.
+	
+	Opening Fields
+	----------------------------------------------------------------------------
+	GUID:see 1.6.0
+	
+	TypeGUID:see 1.6.0
+	
+	Name: see 1.6.0
+	
+	LevelGUID: LevelGUID = _Element.Document.GetElement(_Element.LevelId).UniqueId,
+	
+	Location: The location of an element is the distance between the element and the
+	beggining of the wall. This can be found two ways. Firstly if the element is a 
+	door or a window it can be found through the elements location field as a
+	location point. If it is a curtain wall then you need to take the wall as about
+	location curve and find its midpoint as demostrated below.
+	Ex
+	//Location Point
+    opening.Location = beggining.FindDistanceBetweenTwoPoints(midpoint);
+	//Location Curve
+	var line = (_Element.Location as LocationCurve).Curve.ToLineSegment_3D();
+    var midpoint = line.Start.ToPointDbl().FindMidpointBetweenTwoPoints(line.End.ToPointDbl());
+	opening.Location = beggining.FindDistanceBetweenTwoPoints(midpoint);	
+	
+	VerticalOffset: THe verticle offset is the openings offset from its assinged level.
+	This can be found through built in parameters.
+	//Walls
+	_Element.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET).AsDouble();
+	//Windows and doors
+	opening.VerticalOffset = _Element.get_Parameter(BuiltInParameter.INSTANCE_SILL_HEIGHT_PARAM).AsDouble();
+	
+	OverrideDimensions:
+	Override dimensions are avaliable if every instance of the type does not have the same geometry.
+	For example curtain walls will certainly be diffrent sizes but have the same type.
+	============================================================================
+	1.6.9 Extraction Driver
+	The main method for extraction has been moved to buildinglite so that both
+	the local application and forger applications will always be synced up.
+================================================================================
+1.7 Building Reconstitution Library
+	BuildingReconstitutionLibrary is the DLL that contains all the objects and logic for
+	reconstituting a revit file from a building file file (RevitExtractionAddin). 
+    Building Lite is completely commented. If there’s any question regarding the
+	code contact Casey.M.Hogan@gmail.com.
+	Most of the reconstitution is done through methods in a document object. In
+	general we read in the serialized building object and use that information
+	to create the objects and their types. This section will primarily focus
+	on the correct methods to use to recreate the building.
+	The order in which the elements are regenerated matter too. Some elements
+	are dependent on others to be created.
+	The order of generation is as follows
+	//First we need to load AISC values
+	LoadAISC(myAISC);
+	
+	//Second we generate Object Types
+	GenerateColumnTypes();
+	GenerateBeamTypes();
+	GenerateWallTypes();
+	
+	//Thirdly we generate non tangible components
+	GenerateLevels();
+    GenerateGrids();
+
+	//Finally we generate the elements themselves
+	GenerateFloors();
+	GenerateRoofs();
+    GenerateWalls();
+    GenerateColumns();
+    GenerateBeams();
+	============================================================================
+	1.7.1 Generate Column Types
+	GenerateColumnTypes creates all of the column types we need for this new file.
+	First we generate our Hold Down Posts. We do this by grabbing the hold down
+	post family duplicating it and setting the width and depth parameters to
+	5.5" x 1.5". 
+	Then we generate each column type. First we find the base family type. We do
+	this by taking the name of the column type and seeing if it is an hss column
+	or a W column. If it is not either of those types it will deafult to being a
+	retangular shape.
+	We take that base shape and duplicate a symbol from it with our column types
+	name. We then set the width and depth parameter of the newly duplicated symbol
+	to the values in the columtype object.
+	Then after that we will activate the new symbol. This will make it accessible
+	to create individual elements from later.
+	----------------------------------------------------------------------------
+	1.7.2 Generate Beam Types
+	Repeat the same steps from 1.7.1
+	The only difference is the parameter for width and depth of the beams will be
+	labled as "bf" for width and "d" for width.
+	----------------------------------------------------------------------------
+	1.7.3 Generate Wall Types
+	GenerateWallTypes creates all of the wall types for the reconstituted revit
+	file. 
+	First we grab a basic wall type that's built into all revit files.
+	Next we duplicate that basic wall with the name of our new walltype. Then
+	we assign the new layers to the wall. If the wall has no layers a generic
+	layer the thickness of the wall is created. After the layers have been
+	generated the walltype is complete.
+	----------------------------------------------------------------------------
+	1.7.4 Generate Levels
+	GenerateLevels generates all of the levels for the reconstituted revit file.
+	Essentially this method takes the name of the level object from our building
+	file and its elevation and uses the  Level.Create() method from the revit api
+	to construct the new level.
+	----------------------------------------------------------------------------
+	1.7.5 Generate Grids
+	GenerateGrids gnerates all the grids for the revit file. This method takes
+	the start point, end point, and name of the grid object in the building file 
+	and uses the Grid.Create() method to make a new one. 
+	----------------------------------------------------------------------------
+	1.7.6 Generate Floors
+	GenerateFloors generates all floors and their floor types for the 
+	reconstituted revit file. The reason why we dont seperate the floor types
+	from their floors is because in general floors are very different from one
+	another and rarely share the same type. The floor type is generated by taking
+	a basic floor type from the revit file duplicating it with the name of the 
+	new floorplate and assinging its new layers.
+	Next we take the floortype level and outline of the floor and use the 
+	Document.Create.NewFloor() method to create the floor. After that we set the
+	floors offset and then put in the holes into the new floorplate.
+	----------------------------------------------------------------------------
+	1.7.7 Generate Roofs
+	GenerateRoofs generates all roofs and their roof types for the 
+	reconstituted revit file. The reason why we dont seperate the roof types
+	from their roofs is because in general roofs are very different from one
+	another and rarely share the same type. The roof type is generated by taking
+	a basic roof type from the revit file duplicating it with the name of the 
+	new roofplate and assinging its new layers.
+	Next we take the rooftype level and list of curves of the roof and use the 
+	Document.Create.NewFootPrintRoof() method to create the floor. After that we
+	iterate through the roofs modelcurves and set the appropriate ones to be
+	curve defining. We do this because occasionally when constructing a roof
+	a curve will not be allowed to be assigned as slope defeining even when
+	it was previously. Finally we set the roofs offset.
+	----------------------------------------------------------------------------
+	1.7.8 Generate Walls
+	GenerateWalls generates all the walls in the file. The wall generation process
+	is fairly complex due to the nature of panelization. For each wall we will
+	generate every one of thier panels instead of one wall itself. So it's likely
+	that one wall object will be modeled as multiple stacked walls in the revit
+	file. To generate a wall we use the Wall.Create() method. After these wall
+	panels have been made we will generate the hold down posts. Hold down posts are
+	generated as columns. These posts are imbedded in the walls. Hold downs	are 
+	a single continous steel rod that goes from the bottom of the stack of panels
+	to the top. The rod is the flanked by a number of posts on each wall panel.
+	Some panels may not contain hold down systems.
+	----------------------------------------------------------------------------	
+================================================================================
+2.0 FORGE
+Autodesk Forge is a cloud-based platform of APIs, tools, and services that 
+enable developers to build web and mobile applications for design, engineering,
+and construction industries. It provides a set of web-based APIs and services
+that allow developers to build applications that integrate with Autodesk
+software products such as AutoCAD, Revit, and Fusion 360.
+
+The platform includes various APIs and services that enable developers to
+accomplish tasks such as:
+
+	•Viewing and rendering 2D and 3D models in web browsers or mobile devices.
+
+	•Creating and managing data within the Autodesk cloud environment.
+
+	•Automating repetitive tasks within Autodesk software products.
+
+	•Integrating with other software platforms and services.
+
+	•Analyzing and extracting data from Autodesk software products.
+
+	•Building custom applications and workflows.
+
+The Autodesk Forge platform is built on top of Amazon Web Services
+(AWS) and uses various cloud-based technologies, such as Amazon S3, EC2, and 
+Lambda,to deliver its services. Developers can use a variety of programming 
+languages,such as JavaScript, .NET, Python, and Java, to interact with the 
+Forge APIs.
+
+The platform also includes a developer community, documentation, and a 
+marketplace where developers can share and sell their applications and services.
+Overall, Autodesk Forge provides a powerful set of tools and services that 
+enable developers to build custom applications and workflows that extend the
+functionality of Autodesk software products and streamline the design and 
+construction process.
+================================================================================
+2.1 Notes
+    • Forge changes it's name in 2023. It is now called Autodesk Platform Services.
+    • Forge has 13 APIs.
+		-Authentication
+		-Data Exchange
+		-Data Management
+		-Data Visualization
+		-Design Automation
+		-Fusion Data
+		-Model Derivative
+		-Parameters API
+		-Premium Reporting
+		-Reality Capture
+		-Token Flex
+		-Viewer
+		-Webhooks
+	• BimUtopia uses 2 to 3 of those apis (bim 360 has largly been replaced by
+	   azure file share and blob storage by the creation of this document)
+		-Data management API
+		-Design Automation API
+		-Bim360 API
+	• Forge APIs are called by curl commands using system.Net.WebRequests
+	  and properly formatted strings. 
+================================================================================
+2.2 Desing Automation Activity Creation
+Autodesk Forge Design Automation API is a cloud-based service provided by 
+Autodesk, which allows developers to automate and customize design and 
+engineering workflows using the Autodesk platform. The API provides a set of
+tools and services that enable developers to create powerful applications that
+can perform tasks like generating 3D models, processing data, and creating
+reports.
+
+The Design Automation API provides a RESTful web service interface, which allows
+developers to use a wide range of programming languages and platforms, including
+.NET Developers can use this API to access the core functionality of Autodesk's
+design and engineering software, such as AutoCAD, Revit, and Inventor, and
+automate repetitive tasks, perform batch processing, and create custom workflows.
+	----------------------------------------------------------------------------
+	2.2.1 Notes
+	•DesignAutomationActvityCreation is a seperate application for interfacing
+	 with visser engineerings forge account.
+	•DesignAutomationActvityCreation a webapp and uses a broswer to interact with
+	 the user.
+	•Only used locally, regular users do not need access to this application. Its
+	 purpose is to create and update the applications hosted on forge.
+	•Forge can only host 10 of these activities at once.
+	
+	----------------------------------------------------------------------------
+	2.2.2 Uploading a program to forge.
+	In the solution for DesignAutomationActvityCreation create a new project and
+	within that project create a file called {ProjectName}.bundle. 
+	then add a file called PackageContents.xml to this folder
+	
+	The PackageContents file is structured as such
+	<?xml version="1.0" encoding="utf-8" ?>
+	<ApplicationPackage Name="{ProjectName}" Description="{Project Description}" Author="Casey M Hogan">
+	  <Components Description="{Project Description}">
+		<RuntimeRequirements OS="Win64"
+							 Platform="Revit"
+							 SeriesMin="R2018"
+							 SeriesMax="R2022" />
+		<ComponentEntry AppName="{ProjectName}"
+						Version="1.0.0"
+						ModuleName="./Contents/{ProjectName}.addin"
+						AppDescription="{Project Description}"
+						LoadOnCommandInvocation="False"
+						LoadOnRevitStartup="True" />
+	  </Components>
+	</ApplicationPackage>
+	
+	After that add a sub folder called contents and within contents add a file 
+	called 
+	{ProjectName}.addin 
+	The addin File is structured the following way
+	<?xml version="1.0" encoding="utf-8" standalone="no"?>
+	<RevitAddIns>
+		<AddIn Type="DBApplication">
+			<Name>{ProjectName}</Name>
+			<FullClassName>{ProjectName}.Command</FullClassName>
+			<Text>Revit for Design Automation</Text>
+			<Description>{Project Description}</Description>
+			<VisibilityMode>AlwaysVisible</VisibilityMode>
+			<Assembly>.\{ProjectName}.dll</Assembly>
+			<AddInId>000BD853-36E4-461f-9171-C5ACEDA4E733</AddInId>
+			<VendorId>ADSK</VendorId>
+			<VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+		</AddIn>
+	</RevitAddIns>
+	
+	Next you will need to add a build event to the post build event command line:
+	xcopy /Y /F "$(TargetDir)*.dll" "$(ProjectDir){ProjectName}.bundle\Contents\"
+	del /F "$(ProjectDir)..\forgesample\wwwroot\bundles\{ProjectName}.zip"
+	"C:\Program Files\7-Zip\7z.exe" a -tzip "$(ProjectDir)..
+	/forgesample/wwwroot/bundles/{ProjectName}.zip" "$(ProjectDir){ProjectName}
+	.bundle\" -xr0!*.pdb
+	----------------------------------------------------------------------------
+	2.2.3 Creating a forge application
+	A forge application is very similar to a revit api application. You create a
+	file called Command.cs this will serve as your entry point to the revit file
+	Just make sure Command inherits from IExternalDBApplication.
+	public class Command : IExternalDBApplication
+	----------------------------------------------------------------------------
+	
+================================================================================
+3.0 BimUtopia
+Bim Utopia is the proprietary software made by Visser Engineering. Its primary
+purpose is to allow the end user to interact with relevant structural data
+extracted from an architects revit file. 
+================================================================================
+3.1 Notes
+- BimUtopia is built with using .Net Framework 4.8
+- Built on an MVC design pattern.
+- Hosted on azure
+================================================================================
+3.2 Azure
+Bim Utopia is hosted on Microsoft Azure as an App service. 
+================================================================================
+	3.2.1 Azure App Services	
+	Azure App Service is a platform-as-a-service (PaaS) from 
+	Microsoft Azure that allows developers to quickly build, deploy, and manage
+	web, mobile, and API applications. It provides an easy-to-use interface 
+	for deploying and scaling applications with minimal effort, so developers
+	can quickly get their applications up and running.
+
+	One of the main features of Azure App Service is its support for a wide
+	range of programming languages, including .NET Additionally, App Service offers
+	built-in DevOps capabilities, making it easy to integrate with popular source
+	control systems like GitHub and automate the deployment process.
+
+	Another key feature of Azure App Service is its scalability. App Service can
+	scale applications vertically and horizontally to accommodate traffic spikes
+	and growing demand, ensuring that applications can handle high levels of 
+	traffic without downtime. It also provides built-in security features like
+	SSL/TLS encryption, Azure Active Directory integration, and Web Application
+	Firewall (WAF) protection, ensuring that applications are secure and compliant
+	with industry standards.
+	----------------------------------------------------------------------------
+	3.2.2 Azure Blob Storage
+	Azure Blob Storage is a cloud-based storage service offered by Microsoft 
+	Azure that allows users to store and manage large amounts of unstructured
+	data, such as text and binary data, images, and videos. It is a highly
+	scalable and secure storage solution designed to meet the needs of modern
+	applications that generate and consume massive amounts of data.
+
+	Azure Blob Storage is a cost-effective solution for storing data in the 
+	cloud. Users only pay for the amount of storage they use, and can easily
+	scale their storage needs up or down as required. It also provides a variety
+	of storage tiers, each with different performance characteristics and costs,
+	allowing users to choose the most appropriate storage tier for their data.
+
+	One of the key features of Azure Blob Storage is its accessibility. It
+	provides a simple REST API and SDKs for a variety of programming languages,
+	making it easy for developers to integrate Blob Storage into their
+	applications. Additionally, Blob Storage can be accessed from anywhere in
+	the world over HTTP or HTTPS, making it an ideal storage solution for
+	globally distributed applications.
+	----------------------------------------------------------------------------
+	3.2.3 Azure File Storage
+	Azure File Share is a cloud-based file storage service offered by Microsoft
+	Azure that allows users to create and manage file shares in the cloud. It 
+	provides a highly scalable and fully managed storage solution that can be
+	accessed from anywhere in the world over the SMB (Server Message Block)
+	protocol or REST API.
+
+	With Azure File Share, users can easily share files across different 
+	platforms and devices, making it an ideal solution for organizations with
+	distributed teams. It also supports standard file system features like file
+	locking and access control, ensuring that files are secure and accessible
+	only to authorized users.
+
+	Azure File Share is a cost-effective storage solution that offers
+	pay-as-you-go pricing, allowing users to only pay for the storage they use.
+	It also provides multiple tiers of storage, each with different performance
+	characteristics and costs, giving users the flexibility to choose the storage
+	tier that best meets their needs.
+
+	Azure File Share is a fully managed cloud-based file storage
+	service that provides a cost-effective, scalable, and secure solution for
+	sharing files across different platforms and devices. Its support for
+	standard file system features and pay-as-you-go pricing make it an ideal
+	solution for organizations of all sizes that need to store and share files
+	in the cloud.
+	----------------------------------------------------------------------------
+	3.2.4 Azure SQL tables
+	Azure SQL Tables is a cloud-based table storage service offered by Microsoft
+	Azure that allows users to store and manage structured data in the cloud. 
+	It provides a scalable and fully managed storage solution that can be
+	accessed from anywhere in the world over the REST API or client libraries
+	for various programming languages.
+
+	With Azure SQL Tables, users can store and manage large volumes of structured
+	data, such as key-value pairs or tabular data, in a highly available and
+	secure environment. It also supports standard database features like indexing
+	and querying, making it easy to retrieve and analyze data stored in the tables.
+
+	Azure SQL Tables is a cost-effective storage solution that offers 
+	pay-as-you-go pricing, allowing users to only pay for the storage they use. 
+	It also provides multiple tiers of storage, each with different performance
+	characteristics and costs, giving users the flexibility to choose the storage
+	tier that best meets their needs.
+
+	Azure SQL Tables is a cloud-based table storage service that provides a 
+	scalable, fully managed, and cost-effective solution for storing
+	and managing structured data in the cloud. Its support for standard database
+	features and pay-as-you-go pricing make it an ideal solution for 
+	organizations of all sizes that need to store and manage large volumes of
+	structured data.
+	----------------------------------------------------------------------------
+================================================================================
+3.2 Forge
+	----------------------------------------------------------------------------
+	3.2.1 ForgeDriver
+	Forge Driver contains all the methods to create forge operations. A driver
+	will contain managers for each forge activity we have (ReconstitutionManager,
+	ExtractionManager, and AutoCADFileManager).
+	Forge Driver will run these tasks asynchrously. This is so that a user can
+	still interact with the UI while forge runs a task. That being said any
+	function called to the controller will have to wait for the activity to
+	execute. 
+	To create a forge driver you need to pass in a User and the name of the project
+	you're working on.
+	----------------------------------------------------------------------------
+	3.2.2 DesignAutomationManager
+	All the managers inherit from a common object called Design AutomationManager.
+	This object contains all the information needed by all other managers to make
+	calls to forge.
+	----------------------------------------------------------------------------
+	3.2.3 DesignAutomationExtraction
+	The extraction manager manges making calls to forge for the extraction of 
+	data from the revit file. 
+	
+	The following steps are taken to run the extraction call.
+	1)Get the file from azure and store it in the managers stream.
+	2)Using the storage manger create an outputfile location for a bld.
+	3)Upload the revit file that's stored to your manager to the input file
+	location in the storage manager.
+	4) Create both the urls for the input file and output file.
+	5) Start the extraction work item using a curl command.
+	6) Wait for the work item to execute.
+	Success
+		7) If the work item succeeded then grab the output file and upload it to 
+		azure.
+		8) Email the user the good news.
+	Failed
+		7) Grab the report from the workitem,
+		8) Check if the workitem failed because of version issues.
+		9) Alert the user via email that the workitem failed. If the workitem
+		failed because of version issues alert the user.
+	----------------------------------------------------------------------------
+	3.2.4 DesignAutomationReconstitution
+	The reconstitution manager manages making calls to forge for the 
+	reconstitution of data from the building file. 
+	
+	The following steps are taken to run the extraction call.
+	1) Get the file from azure and put it in a stream in the manager.
+	2) Fetch an empty revit file based on the year you want to create a new file
+	in.
+	3)Get the CSV file containing information on wide flange shapes. store it in
+	the managers CSV stream.
+	4)Set an output file location using the StorageManager.
+	5)Upload the blank revit file as the input file.
+	6) Create a location for your output file.
+	7) Create urls to access both input and output file locations.
+	8) Upload your CSV and BLD file using the sotrage manager.
+	9) create urls for these files using the Storage Manager.
+	10) Start the WorkItem.
+		Success
+		11) If the work item succeeded then grab the output file and upload it to 
+		azure.
+		12) Email the user the good news.
+		Failed
+		11) Grab the report from the workitem,
+		12) Check if the workitem failed because of version issues.
+		13) Alert the user via email that the workitem failed. If the workitem
+		failed because of version issues alert the user.
+	----------------------------------------------------------------------------
+	3.2.5 DesignAutomationCreateAutocadFiles
+	The AutocadFiles manager manages making calls to forge to create autocad files
+	from a revit file.
+	The following steps are taken to run the autocad file call.
+	1) Get the file from azure and put it in a stream in the manager.
+	2) Set up the outputfile as a zip file using the storage manager.
+	3) Upload the revit file to the storage manager.
+	4) Get the url for the location of the output file.
+	5) Get the url for the location of the input file.
+	6) start the work item and wait for it's execution.
+	Success
+		7) If the work item succeeded then grab the output file and upload it to 
+		azure.
+		8) Email the user the good news.
+	Failed
+		7) Grab the report from the workitem,
+		8) Check if the workitem failed because of version issues.
+		9) Alert the user via email that the workitem failed. If the workitem
+		failed because of version issues alert the user.
+
+================================================================================
+4.0 github
+	
+GitHub is a web-based platform that provides a centralized location for software
+developers to collaborate, manage and track changes to their code. It offers
+features such as version control, issue tracking, project management, code
+review, and collaboration tools. GitHub also provides access to a vast
+repository of open-source projects.
+================================================================================
+4.1 VE-Software
+•The following are repositories operated by Visser Engineering/BimUtopia
+•DesignAutomationActivityCreator
+•BimUtopiaV2
+•VisserEngineeringAddinTools 
+•ReconstitutionLibrary
+•BuildingLiteV3
+•UsefulStuff
+•Retrieve
+•UsefulStuffv2
+•BuildingLite
+•Resources (Public)
+================================================================================
+4.2 Operating GitHub
+Github can be operated using command line commands.
+
+Here are some of the most commonly used one.
+1) git init: Initializes a new Git repository in a directory.
+2) git clone: Creates a local copy of a remote repository.
+3) git add: Adds changes to the staging area in preparation for committing them.
+4) git commit: Records changes to the repository.
+5) git push: Sends committed changes to a remote repository.
+6) git pull: Retrieves changes from a remote repository and merges them into the
+local repository.
+7) git merge: Combines multiple branches into a single branch.
+8) git branch: Lists, creates, or deletes branches.
+9) git checkout: Switches to a different branch or restores files from a
+previous commit.
+10) git log: Displays a history of commits.
+11) git status: Shows the status of the current repository, including which
+files have changed.
+12) git diff: Shows differences between files in the repository.
+13) git stash: Temporarily stores changes that are not ready to be committed.
+14) git reset: Undoes changes made to the repository.
+================================================================================
+5.0 Visual Studios & C#
+
+Visual Studio is an integrated development environment (IDE) developed by
+Microsoft for building a variety of software applications, including web
+applications, mobile apps, desktop apps, and games. It offers a comprehensive
+set of tools and features for coding, debugging, testing, and deploying software
+, and supports a wide range of programming languages and frameworks, such as C#,
+and visual basic. Visual Studio also includes integrated support for
+source control systems like Git, and allows developers to collaborate on
+projects with other team members. Its user-friendly interface and extensive
+documentation make it a popular choice among developers worldwide.
+================================================================================
+5.1 DLL
+A DLL (Dynamic Link Library) is a file containing code and data that can be used
+by multiple programs simultaneously. DLLs are designed to provide reusable 
+functionality to software applications, such as libraries for handling graphics,
+networking, or user interface elements. Instead of having to include the same
+code in every program, the DLL can be loaded into memory at runtime and
+accessed by any program that needs it, reducing the amount of memory and disk
+space required by the applications. DLLs can be created in a variety of
+programming languages, and are commonly used in Windows operating systems and 
+other software applications.
+================================================================================
+5.2 MVC
+MVC (Model-View-Controller) is a popular software architecture pattern used in
+building web applications. It separates an application's logic and data into
+three interconnected components: Model, View, and Controller. The Model is 
+responsible for managing data and business logic, the View is responsible for
+presenting data to the user, and the Controller is responsible for handling
+user input and modifying the Model and View accordingly. By separating these
+components, MVC enables developers to build scalable and maintainable
+applications that are easy to modify and extend.
+
+The Model component in MVC represents the data and business logic of the
+application. It handles tasks such as data validation, retrieval, and storage.
+The Model component is independent of the user interface and communicates with
+the View and Controller only through a defined interface. This allows the same
+ data and logic to be used by multiple Views and Controllers.
+
+The View component in MVC represents the user interface of the application. It
+is responsible for displaying data to the user and receiving user input. The 
+View communicates with the Controller to modify the Model, but does not
+directly modify the Model itself. This separation of concerns enables different
+Views to display the same data in different ways, depending on the needs of
+the application.
+
+The Controller component in MVC handles user input and modifies the Model and 
+View components accordingly. It receives input from the user through the View,
+processes it, and updates the Model and View as necessary. The Controller is
+responsible for controlling the flow of the application and managing the 
+interactions between the Model and View components.
+================================================================================
+5.3 .NET Core
+
+.NET Core is a free, open-source, cross-platform framework for building modern,
+high-performance applications for the web, mobile, desktop, gaming, and IoT
+devices. It is designed to be modular, lightweight, and optimized for 
+cloud-native scenarios. .NET Core is the next generation of .NET, building on
+the success of the .NET Framework while also providing new features and
+improvements.
+
+.NET Core includes a set of runtime libraries, compilers, and tools that enable
+developers to build and deploy applications on a variety of platforms,
+including Windows, macOS, and Linux. It supports multiple programming languages,
+including C#, and Visual Basic, and provides a consistent development
+experience across all platforms.
+
+Some of the key features of .NET Core include improved performance, 
+cross-platform support, support for microservices architectures, 
+and the ability to deploy applications as self-contained executables. 
+It also includes a growing ecosystem of third-party libraries, tools, and 
+frameworks that make it easier for developers to build and deploy modern 
+applications.
+================================================================================
+5.4 .NET Framework
+The .NET Framework is a software framework developed by Microsoft for building
+and running Windows applications. It provides a runtime environment for managing
+and executing applications, as well as a comprehensive set of class libraries
+and APIs for developing Windows desktop applications, web applications, 
+and web services.
+
+The .NET Framework includes a Common Language Runtime (CLR) that enables
+developers to write code in multiple programming languages and execute it on a 
+wide range of platforms. The framework also provides a rich set of class libraries 
+for common programming tasks, such as handling input/output operations, working 
+with databases, and interacting with the operating system.
+
+The .NET Framework is a mature and well-established technology that has been in
+use for over 20 years. It has a large and active developer community, 
+and is supported by a wide range of third-party libraries and tools that extend 
+its capabilities. However, the .NET Framework is primarily designed for 
+Windows-based applications and is not cross-platform compatible like .NET Core
+================================================================================
+5.5 Difference between .NET Core and .Net Framework
+.NET Core and .NET Framework are two different software frameworks developed by 
+Microsoft for building Windows applications, but there are some key differences
+between them.
+
+One of the main differences is that .NET Framework is primarily designed for 
+building Windows desktop applications, while .NET Core is a cross-platform 
+framework that can be used to build applications for Windows, Linux, and macOS. 
+This means that .NET Core is more suitable for building cloud-based applications 
+and microservices that need to run on multiple platforms.
+
+Another difference is that .NET Core is a more modular and lightweight framework 
+than .NET Framework. It includes only the core runtime libraries needed to run 
+an application, with optional libraries available for additional functionality. 
+In contrast, .NET Framework includes a larger set of libraries and APIs, 
+making it more suitable for building complex desktop applications.
+
+In terms of performance, .NET Core is generally faster and more efficient than
+.NET Framework, particularly when it comes to running on non-Windows platforms. 
+This is due to its more lightweight design and optimized runtime.
+
+Overall, the choice between .NET Core and .NET Framework depends on the 
+specific needs of the application being developed. If cross-platform 
+compatibility is important, or if the application needs to run in a 
+cloud-based environment, .NET Core is likely the better choice. If the 
+application is primarily targeting Windows desktops and requires access to the 
+full range of .NET Framework libraries, then .NET Framework may be the more 
+appropriate option.
+================================================================================
+5.6 Operating github with Visual Studios
+To operate GitHub through Visual Studio, you can follow these general steps:
+
+1)Open Visual Studio and create a new project or open an existing project.
+
+2)In the Solution Explorer, right-click on the project and select "Add to Source 
+Control" to add the project to a Git repository.
+
+3)If you haven't already, you'll need to sign in to your GitHub account. To do
+this, go to the "Team Explorer" tab and click the "Connect" button. Then select
+ the GitHub option and sign in with your credentials.
+
+4)Once you're signed in, you can click the "Sync" button to synchronize your
+ local repository with the remote repository on GitHub.
+
+5)To push your changes to GitHub, click the "Commit" button in the "Changes"
+section of the "Team Explorer" tab. This will open the "Commit Changes" 
+dialog, where you can enter a commit message and select the files you want
+to commit.
+
+6)After committing your changes, you can push them to GitHub by clicking the 
+"Sync" button in the "Changes" section of the "Team Explorer" tab.
+
+7)If you need to pull changes from GitHub, you can click the "Sync" button 
+and select the "Pull" option to synchronize your local repository with the 
+remote repository on GitHub.
+================================================================================
+5.7 Publishing the website
+1) Go to https://azure.microsoft.com/en-us/account/ click Portal
+2) Select “BimUtopia App Service”
+3) Select Get Publish Profile (Save for later)
+4) Open Bimutopia
+5) Select Build -> Publish
+6) Select Start
+7) Select Import Profile. And select the one previously downloaded.
+8) And publish!
+
+
+
+
+
