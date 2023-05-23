@@ -1,4 +1,5 @@
-Help = function (_input) {
+class Help {
+    constructor(_input) {
     var _self = this;
     this.show = false;
     this.getDisplayData = function () {
@@ -160,4 +161,5 @@ Help = function (_input) {
     this.startWorkingWithAFile.label = "...Start Working With A File";
 
     this.content = [this.getOverview, this.getStarted, this.createAProject, this.startABuildingInAnExistingProject, this.startWorkingWithAFile, , this.modelTalk]
+}
 }
