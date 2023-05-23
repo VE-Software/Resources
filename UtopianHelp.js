@@ -161,5 +161,3 @@ Help = function (_input) {
 
     this.content = [this.getOverview, this.getStarted, this.createAProject, this.startABuildingInAnExistingProject, this.startWorkingWithAFile, , this.modelTalk]
 }
-
-var help = new Help();
